@@ -6,6 +6,9 @@ import asyncio
 import cv2
 import numpy as np
 import os
+import platform
+
+op_platform = platform.system()
 
 FPS = 0.5
 SECONDS_PER_REC = 10
@@ -21,6 +24,8 @@ CACHE_PATH = os.path.join(os.environ["HOME"], ".cache", "memento")
 
 
 def get_active_window():
+    if op_platform == 'Darwin': # Doesn't work on mac and no simple python solution
+        return "None"
     display = Xlib.display.Display()
     window = display.get_input_focus().focus
     if isinstance(window, Xlib.xobject.drawable.Window):
