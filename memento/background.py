@@ -46,24 +46,6 @@ class Background:
         self.metadata_cache = MetadataCache()
 
         os.makedirs(utils.CACHE_PATH, exist_ok=True)
-        self.db = Db()
-        if "OPENAI_API_KEY" not in os.environ:
-            self.chromadb = None
-            print(
-                "No OPENAI_API_KEY environment variable found, LLM related features will not be available"
-            )
-        else:
-            self.chromadb = Chroma(
-                persist_directory=utils.CACHE_PATH,
-                embedding_function=OpenAIEmbeddings(),
-                collection_name="memento_db",
-            )
-
-        self.sct = mss.mss()
-        self.rec = utils.Recorder(
-            os.path.join(utils.CACHE_PATH, str(self.nb_rec) + ".mp4")
-        )
-        self.rec.start()
 
         self.running = True
 
@@ -129,6 +111,27 @@ class Background:
 
     def run(self):
         signal.signal(signal.SIGINT, self.stop_rec)
+        db = Db()
+
+        if "OPENAI_API_KEY" not in os.environ:
+            chromadb = None
+            print(
+                "No OPENAI_API_KEY environment variable found, LLM related features will not be available"
+            )
+        else:
+            chromadb = Chroma(
+                persist_directory=utils.CACHE_PATH,
+                embedding_function=OpenAIEmbeddings(),
+                collection_name="memento_db",
+            )
+
+        sct = mss.mss()
+
+        rec = utils.Recorder(
+            os.path.join(utils.CACHE_PATH, str(self.nb_rec) + ".mp4")
+        )
+        rec.start()
+
 
         print("Running in background ...")
         prev_im = np.zeros(
@@ -138,10 +141,10 @@ class Background:
             window_title = utils.get_active_window()
 
             # Get screenshot and add it to recorder
-            im = np.array(self.sct.grab(self.sct.monitors[1]))
+            im = np.array(sct.grab(sct.monitors[1]))
             im = im[:, :, :-1]
             im = cv2.resize(im, utils.RESOLUTION)
-            asyncio.run(self.rec.new_im(im))
+            asyncio.run(rec.new_im(im))
 
             # Create metadata
             t = json.dumps(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -206,7 +209,7 @@ class Background:
                     )
                     add_db_start = time.time()
                     try:
-                        self.db.add_texts(
+                        db.add_texts(
                             texts=text,
                             bbs=bbs,
                             frame_i=result["frame_i"],
@@ -234,8 +237,8 @@ class Background:
                                 }
                                 for _ in range(len(all_texts))
                             ]
-                            if self.chromadb is not None:
-                                self.chromadb.add_texts(
+                            if chromadb is not None:
+                                chromadb.add_texts(
                                     texts=all_texts,
                                     metadatas=md,
                                 )
@@ -250,13 +253,13 @@ class Background:
                 except Exception:
                     getting = False
 
-            print("QUEUE SIZE", self.images_queue.qsize())
+            # print("QUEUE SIZE", self.images_queue.qsize())
 
             self.frame_i += 1
             if (self.frame_i % (utils.FPS * utils.SECONDS_PER_REC)) == 0:
                 print("CLOSE")
-                self.rec.stop()
+                rec.stop()
                 self.nb_rec += 1
-                self.rec = utils.Recorder(
+                rec = utils.Recorder(
                     os.path.join(utils.CACHE_PATH, str(self.nb_rec) + ".mp4")
                 )
