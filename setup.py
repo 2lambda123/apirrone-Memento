@@ -13,20 +13,20 @@ setup(
     install_requires=[
         "mss==9.0.1",
         "numpy==1.25.1",
-        "opencv-contrib-python==4.8.0.74",
+        "opencv-contrib-python==4.8.1.78",
         "xlib==0.21",
         "av==10.0.0",
         "pygame==2.5.0",
         "TextTron==0.45",
         "thefuzz==0.19.0",
-        "langchain==0.0.325",
+        "langchain==0.3.7",
         "openai==0.27.8",
         "tiktoken==0.4.0",
         "python-Levenshtein==0.21.1",
         "tesserocr==2.6.1",
         "pygame-textinput==1.0.1",
         "pyperclip==1.8.2",
-        "Pillow==10.0.1",
+        "Pillow==10.3.0",
         "chromadb==0.4.9"
     ],
     entry_points={
