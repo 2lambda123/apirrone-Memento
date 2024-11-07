@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import pickle
+import fickling
 
 
 class XYCut:
@@ -234,7 +234,7 @@ if __name__ == "__main__":
         [400, 100, 300, 900],
         [800, 100, 1090, 900],
     ]
-    bboxes = pickle.load(open("bboxes.pkl", "rb"))
+    bboxes = fickling.load(open("bboxes.pkl", "rb"))
 
     xycut = XYCut(bboxes, blank)
     xycut.cut(max_depth=3, debug=True)
