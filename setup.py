@@ -27,7 +27,8 @@ setup(
         "pygame-textinput==1.0.1",
         "pyperclip==1.8.2",
         "Pillow==10.0.1",
-        "chromadb==0.4.9"
+        "chromadb==0.4.9",
+        "fickling>=0.1.3,~=0.1.0",
     ],
     entry_points={
         "console_scripts": [

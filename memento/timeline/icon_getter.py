@@ -4,6 +4,7 @@ import os
 import pygame
 from memento.utils import CACHE_PATH
 import pickle
+import fickling
 
 
 class IconGetter:
@@ -14,7 +15,7 @@ class IconGetter:
         self.size = size
         self.icon_cache_path = os.path.join(CACHE_PATH, "icon_cache.pickle")
         if os.path.exists(self.icon_cache_path):
-            self.icon_cache = pickle.load(open(self.icon_cache_path, "rb"))
+            self.icon_cache = fickling.load(open(self.icon_cache_path, "rb"))
         else:
             self.icon_cache = {}
 

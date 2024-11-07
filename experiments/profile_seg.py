@@ -1,6 +1,6 @@
-import pickle
 import numpy as np
 import cv2
+import fickling
 
 
 class ProfileSeg:
@@ -83,7 +83,7 @@ class ProfileSeg:
         return blank
 
 
-for bboxes in [pickle.load(open("bboxes" + str(i) + ".pkl", "rb")) for i in range(5)]:
+for bboxes in [fickling.load(open("bboxes" + str(i) + ".pkl", "rb")) for i in range(5)]:
     blank = np.zeros((1080, 1920, 3), np.uint8)
     profile_seg = ProfileSeg(bboxes, blank.shape[:2])
     # im = profile_seg.draw_bboxes(blank)
